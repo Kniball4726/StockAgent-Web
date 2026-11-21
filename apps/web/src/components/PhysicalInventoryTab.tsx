@@ -18,6 +18,7 @@ import type {
 } from "../lib/api-client";
 import { canRunPhysicalInventory } from "../lib/rbac";
 import { CameraScannerModal } from "./CameraScannerModal";
+import { InventoryComparisonResults } from "./inventory/InventoryComparisonResults";
 
 interface PhysicalInventoryTabProps {
   api: StockAgentApiClient;
@@ -56,7 +57,8 @@ export function PhysicalInventoryTab({ api, user }: PhysicalInventoryTabProps) {
     }
     setCounts((prev) => ({
       ...prev,
-      [resolvedKey]: (prev[resolvedKey] ?? 0) + Math.max(1, Math.trunc(qtyToAdd)),
+      [resolvedKey]:
+        (prev[resolvedKey] ?? 0) + Math.max(1, Math.trunc(qtyToAdd)),
     }));
     setScanCode("");
     setPrelimResult(null);
@@ -81,7 +83,9 @@ export function PhysicalInventoryTab({ api, user }: PhysicalInventoryTabProps) {
       setPrelimResult(res);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Error comparando inventario preliminar."
+        err instanceof Error
+          ? err.message
+          : "Error comparando inventario preliminar."
       );
     } finally {
       setBusy(false);
@@ -101,7 +105,9 @@ export function PhysicalInventoryTab({ api, user }: PhysicalInventoryTabProps) {
       setPrelimResult(res);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "No se pudo finalizar el inventario."
+        err instanceof Error
+          ? err.message
+          : "No se pudo finalizar el inventario."
       );
     } finally {
       setBusy(false);
@@ -117,7 +123,8 @@ export function PhysicalInventoryTab({ api, user }: PhysicalInventoryTabProps) {
           Inventario Físico en Vivo
         </h2>
         <p className="text-xs text-slate-400">
-          Conteo rápido por pistola USB HID o cámara con comparativa instantánea frente a PostgreSQL
+          Conteo rápido por pistola USB HID o cámara con comparativa instantánea
+          frente a PostgreSQL
         </p>
       </div>
 
@@ -138,8 +145,8 @@ export function PhysicalInventoryTab({ api, user }: PhysicalInventoryTabProps) {
           </p>
           <p className="mt-1 tabular-nums">
             Total ítems: {finalResult.total_items} · Coinciden:{" "}
-            {finalResult.coinciden} · Faltantes: {finalResult.faltantes} · Sobrantes:{" "}
-            {finalResult.sobrantes}
+            {finalResult.coinciden} · Faltantes: {finalResult.faltantes} ·
+            Sobrantes: {finalResult.sobrantes}
           </p>
         </div>
       )}
@@ -230,7 +237,10 @@ export function PhysicalInventoryTab({ api, user }: PhysicalInventoryTabProps) {
                         min={0}
                         value={qty}
                         onChange={(e) => {
-                          const nextVal = Math.max(0, Math.trunc(Number(e.target.value) || 0));
+                          const nextVal = Math.max(
+                            0,
+                            Math.trunc(Number(e.target.value) || 0)
+                          );
                           setCounts((prev) => ({ ...prev, [codigo]: nextVal }));
                         }}
                         className="w-24 rounded-lg border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs text-white tabular-nums"
@@ -266,81 +276,12 @@ export function PhysicalInventoryTab({ api, user }: PhysicalInventoryTabProps) {
         </section>
       ) : (
         <div className="rounded-xl border border-slate-800 bg-slate-900/60 p-3 text-xs text-slate-400">
-          Tu rol <strong>{user.role}</strong> no tiene permisos para ejecutar conteos físicos.
+          Tu rol <strong>{user.role}</strong> no tiene permisos para ejecutar
+          conteos físicos.
         </div>
       )}
 
-      {prelimResult && (
-        <section className="rounded-2xl border border-slate-800 bg-slate-900/80 p-4 space-y-4">
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 text-xs">
-            <div className="rounded-xl bg-slate-950 p-3">
-              <span className="text-slate-400">Total Evaluados</span>
-              <p className="mt-1 text-lg font-bold text-white tabular-nums">
-                {prelimResult.total_items}
-              </p>
-            </div>
-            <div className="rounded-xl bg-emerald-500/10 p-3 text-emerald-300">
-              <span>Coinciden</span>
-              <p className="mt-1 text-lg font-bold tabular-nums">
-                {prelimResult.coinciden}
-              </p>
-            </div>
-            <div className="rounded-xl bg-rose-500/10 p-3 text-rose-300">
-              <span>Faltantes</span>
-              <p className="mt-1 text-lg font-bold tabular-nums">
-                {prelimResult.faltantes}
-              </p>
-            </div>
-            <div className="rounded-xl bg-amber-500/10 p-3 text-amber-300">
-              <span>Sobrantes</span>
-              <p className="mt-1 text-lg font-bold tabular-nums">
-                {prelimResult.sobrantes}
-              </p>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead>
-                <tr className="border-b border-slate-800 text-slate-400">
-                  <th className="py-2 pr-3 font-medium">SKU</th>
-                  <th className="py-2 pr-3 font-medium">Nombre</th>
-                  <th className="py-2 pr-3 font-medium text-right">Sistema</th>
-                  <th className="py-2 pr-3 font-medium text-right">Físico</th>
-                  <th className="py-2 pr-3 font-medium text-right">Diferencia</th>
-                  <th className="py-2 font-medium">Estado</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/60">
-                {prelimResult.comparativa.map((row) => (
-                  <tr key={row.codigo}>
-                    <td className="py-2 pr-3 font-mono text-sky-300">{row.codigo}</td>
-                    <td className="py-2 pr-3 text-slate-200">{row.nombre}</td>
-                    <td className="py-2 pr-3 text-right tabular-nums text-slate-400">
-                      {row.stock_sistema}
-                    </td>
-                    <td className="py-2 pr-3 text-right tabular-nums text-white font-semibold">
-                      {row.stock_fisico}
-                    </td>
-                    <td
-                      className={`py-2 pr-3 text-right font-semibold tabular-nums ${
-                        row.diferencia < 0
-                          ? "text-rose-300"
-                          : row.diferencia > 0
-                            ? "text-amber-300"
-                            : "text-emerald-300"
-                      }`}
-                    >
-                      {row.diferencia > 0 ? `+${row.diferencia}` : row.diferencia}
-                    </td>
-                    <td className="py-2 font-medium">{row.estado}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
-      )}
+      {prelimResult && <InventoryComparisonResults result={prelimResult} />}
 
       <CameraScannerModal
         open={scannerOpen}
