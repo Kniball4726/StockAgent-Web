@@ -1,0 +1,41 @@
+{
+  "id": "/",
+  "name": "StockAgent — Gestión de Inventario",
+  "short_name": "StockAgent",
+  "description": "Control de stock multi-tenant, cargas PC, inventario físico en vivo y despacho QR",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#020617",
+  "theme_color": "#0f172a",
+  "categories": ["business", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Despacho QR",
+      "short_name": "Despacho",
+      "url": "/?tab=despacho",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Cargar Archivos",
+      "short_name": "Cargas",
+      "url": "/?tab=cargas",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    },
+    {
+      "name": "Inventario Físico",
+      "short_name": "Inventario",
+      "url": "/?tab=inventario",
+      "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+    }
+  ]
+}

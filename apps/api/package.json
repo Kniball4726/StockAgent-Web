@@ -1,0 +1,43 @@
+{
+  "name": "@stockagent/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server.ts",
+    "build": "tsc -p tsconfig.json",
+    "start": "node dist/server.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:seed": "tsx src/db/seed.ts",
+    "backup:tenant": "tsx src/cli/backup.ts",
+    "migrate:legacy": "tsx src/cli/migrate-legacy.ts"
+  },
+  "dependencies": {
+    "@fastify/multipart": "^9.4.0",
+    "@fastify/websocket": "^11.2.0",
+    "@stockagent/shared": "*",
+    "bullmq": "^6.7.8",
+    "drizzle-orm": "^0.45.4",
+    "exceljs": "^4.4.0",
+    "fast-xml-parser": "^5.12.1",
+    "fastify": "^5.6.1",
+    "ioredis": "^6.0.0",
+    "jszip": "^3.10.2",
+    "pdfjs-dist": "^6.5.438",
+    "pg": "^8.16.3",
+    "xls-reader": "^0.7.0",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/pg": "^8.15.6",
+    "@types/ws": "^8.18.2",
+    "drizzle-kit": "^0.31.11",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  }
+}
